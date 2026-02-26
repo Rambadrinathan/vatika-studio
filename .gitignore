@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test outputs and training files
+test_output/
+kv-training.zip
+lora-model.json
+*.mjs
+*.py
+Planterinfo/
+vatika-investor-site/

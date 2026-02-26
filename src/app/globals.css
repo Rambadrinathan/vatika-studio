@@ -1,26 +1,61 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-forest: #2E5339;
+  --color-forest-light: #3d6e4d;
+  --color-forest-dark: #1e3826;
+  --color-sage: #E8F5E9;
+  --color-sage-dark: #C8E6C9;
+  --color-gold: #C5A53B;
+  --color-gold-light: #D4B84E;
+  --color-cream: #FAFDF7;
+  --color-background: #FAFDF7;
+  --color-foreground: #1a1a1a;
+  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-sage);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-forest);
+  border-radius: 3px;
+}
+
+.dropzone {
+  border: 2px dashed var(--color-forest);
+  transition: all 0.2s;
+}
+.dropzone:hover, .dropzone.drag-over {
+  border-color: var(--color-gold);
+  background-color: rgba(200, 230, 201, 0.3);
+}
+
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-pulse-gentle {
+  animation: pulse-gentle 2s ease-in-out infinite;
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.25s ease-out;
 }
