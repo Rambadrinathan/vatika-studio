@@ -98,3 +98,21 @@ body {
 .animate-slide-in-right {
   animation: slide-in-right 0.25s ease-out;
 }
+
+/* Scarcity badge pulse */
+@keyframes scarcity-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
+}
+.scarcity-pulse {
+  animation: scarcity-glow 2s ease-in-out infinite;
+}
+
+/* Active design card ring pulse */
+@keyframes card-ring {
+  0%, 100% { ring-color: rgba(46, 83, 57, 0.3); }
+  50% { ring-color: rgba(46, 83, 57, 0.6); }
+}
+.design-card-active {
+  animation: card-ring 1.5s ease-in-out infinite;
+}
