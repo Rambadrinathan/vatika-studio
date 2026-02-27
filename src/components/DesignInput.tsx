@@ -75,11 +75,21 @@ export default function DesignInput() {
   const [dragOver, setDragOver] = useState(false);
   const [budgetAnimating, setBudgetAnimating] = useState(false);
 
+  const [fileError, setFileError] = useState<string | null>(null);
+
   const handleFile = useCallback(
     (files: FileList | null) => {
+      setFileError(null);
       if (!files || files.length === 0) return;
       const file = files[0];
-      if (!file.type.startsWith("image/")) return;
+      if (!file.type.startsWith("image/")) {
+        setFileError("Please upload a JPG or PNG image.");
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setFileError("Image too large (max 10 MB). Please use a smaller photo.");
+        return;
+      }
       // Compress image to stay under Vercel's 4.5MB body limit
       const img = new Image();
       img.onload = () => {
@@ -311,6 +321,9 @@ export default function DesignInput() {
           className="hidden"
           onChange={(e) => handleFile(e.target.files)}
         />
+        {fileError && (
+          <p className="text-red-600 text-sm mt-2 text-center font-medium">{fileError}</p>
+        )}
       </div>
 
       {/* ═══ 3. BUDGET CONFIGURATOR ═══ */}
