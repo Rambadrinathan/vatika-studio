@@ -52,6 +52,45 @@ body {
   animation: pulse-gentle 2s ease-in-out infinite;
 }
 
+/* Dual delivery sliders — bold chunky thumbs */
+.delivery-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2E5339;
+  border: 4px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 0 0 2px rgba(46, 83, 57, 0.2);
+  cursor: grab;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.delivery-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3), 0 0 0 4px rgba(46, 83, 57, 0.15);
+}
+.delivery-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.25);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35), 0 0 0 6px rgba(46, 83, 57, 0.1);
+}
+.delivery-slider::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2E5339;
+  border: 4px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), 0 0 0 2px rgba(46, 83, 57, 0.2);
+  cursor: grab;
+}
+.delivery-slider::-moz-range-thumb:active {
+  cursor: grabbing;
+}
+.delivery-slider::-moz-range-track {
+  background: transparent;
+  border: none;
+}
+
 @keyframes slide-in-right {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }

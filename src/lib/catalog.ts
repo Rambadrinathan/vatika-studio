@@ -149,8 +149,20 @@ export function getDeliveryTier(days: number): DeliveryTier {
   return DELIVERY_TIERS[0];
 }
 
+/** Smooth interpolated multiplier for any day value (not stepped) */
 export function getDiscountMultiplier(days: number): number {
-  return getDeliveryTier(days).multiplier;
+  if (days <= DELIVERY_TIERS[0].days) return DELIVERY_TIERS[0].multiplier;
+  if (days >= DELIVERY_TIERS[DELIVERY_TIERS.length - 1].days)
+    return DELIVERY_TIERS[DELIVERY_TIERS.length - 1].multiplier;
+  for (let i = 0; i < DELIVERY_TIERS.length - 1; i++) {
+    const lo = DELIVERY_TIERS[i];
+    const hi = DELIVERY_TIERS[i + 1];
+    if (days >= lo.days && days <= hi.days) {
+      const t = (days - lo.days) / (hi.days - lo.days);
+      return lo.multiplier + t * (hi.multiplier - lo.multiplier);
+    }
+  }
+  return 1;
 }
 
 // ─── BUDGET TIERS ───
