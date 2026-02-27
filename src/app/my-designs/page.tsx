@@ -107,7 +107,7 @@ function MyDesignsContent() {
                 My Designs
               </h1>
               <p className="text-xs text-gray-500 leading-tight">
-                KarmYog Vatika Design Studio
+                Vatika.AI
               </p>
             </div>
           </div>
@@ -251,7 +251,7 @@ function MyDesignsContent() {
       <footer className="bg-forest-dark text-white/60 py-6">
         <div className="max-w-5xl mx-auto px-4 text-center text-sm">
           <p>
-            KarmYog Vatika Design Studio — NatureLink Education Network Pvt. Ltd.
+            Vatika.AI — NatureLink Education Network Pvt. Ltd.
           </p>
           <p className="mt-1 text-xs">
             Biophilic design solutions for urban spaces | Kolkata, India

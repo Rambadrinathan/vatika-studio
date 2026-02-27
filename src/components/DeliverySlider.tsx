@@ -101,7 +101,7 @@ export default function DeliverySlider({ originalTotal }: Props) {
                 <div
                   className="w-20 h-20 rounded-full flex flex-col items-center justify-center text-white font-bold shadow-lg"
                   style={{
-                    background: `conic-gradient(#2E5339 ${discountPct * 3.6}deg, #E8F5E9 0deg)`,
+                    background: `conic-gradient(#1A3C2E ${discountPct * 3.6}deg, #E8F5E9 0deg)`,
                   }}
                 >
                   <div className="w-16 h-16 rounded-full bg-white flex flex-col items-center justify-center">
@@ -150,14 +150,14 @@ export default function DeliverySlider({ originalTotal }: Props) {
           <div className="relative h-10 flex items-center">
             {/* Track background with gradient */}
             <div className="absolute inset-x-0 h-3 rounded-full overflow-hidden"
-              style={{ background: "linear-gradient(to right, #f59e0b, #eab308, #22c55e, #16a34a, #2E5339)" }}
+              style={{ background: "linear-gradient(to right, #f59e0b, #eab308, #22c55e, #16a34a, #1A3C2E)" }}
             />
             {/* Filled portion */}
             <div
               className="absolute left-0 h-3 rounded-full"
               style={{
                 width: `${timePct}%`,
-                background: "linear-gradient(to right, #f59e0b, #22c55e, #2E5339)",
+                background: "linear-gradient(to right, #f59e0b, #22c55e, #1A3C2E)",
                 boxShadow: "0 0 8px rgba(46, 83, 57, 0.3)",
               }}
             />
@@ -205,14 +205,14 @@ export default function DeliverySlider({ originalTotal }: Props) {
           <div className="relative h-10 flex items-center">
             {/* Track background — inverse gradient (green to gold) */}
             <div className="absolute inset-x-0 h-3 rounded-full overflow-hidden"
-              style={{ background: "linear-gradient(to right, #2E5339, #16a34a, #22c55e, #eab308, #f59e0b)" }}
+              style={{ background: "linear-gradient(to right, #1A3C2E, #16a34a, #22c55e, #eab308, #f59e0b)" }}
             />
             {/* Filled portion (from left) */}
             <div
               className="absolute left-0 h-3 rounded-full"
               style={{
                 width: `${pricePct}%`,
-                background: "linear-gradient(to right, #2E5339, #22c55e)",
+                background: "linear-gradient(to right, #1A3C2E, #22c55e)",
                 boxShadow: "0 0 8px rgba(46, 83, 57, 0.3)",
               }}
             />
