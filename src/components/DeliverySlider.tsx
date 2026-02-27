@@ -7,8 +7,13 @@ function formatRs(n: number): string {
   return `Rs. ${n.toLocaleString("en-IN")}`;
 }
 
-// Map slider index (0-4) to delivery days
-const SLIDER_DAYS = DELIVERY_TIERS.map((t) => t.days);
+// Show only 3 key tiers to avoid decision paralysis:
+// Express (no discount), a mid option, and the best deal
+const VISIBLE_TIERS = [
+  DELIVERY_TIERS[0], // 2 days — Express, 0%
+  DELIVERY_TIERS[2], // 15 days — Made to Order, 20%
+  DELIVERY_TIERS[4], // 45 days — Max savings, 50%
+];
 
 interface Props {
   originalTotal: number;
@@ -18,87 +23,119 @@ export default function DeliverySlider({ originalTotal }: Props) {
   const { deliveryDays, setDeliveryDays } = useDesignStore();
 
   const currentTier = getDeliveryTier(deliveryDays);
-  const sliderIndex = SLIDER_DAYS.indexOf(currentTier.days);
-  const discountedTotal = Math.round(originalTotal * currentTier.multiplier);
-  const savings = originalTotal - discountedTotal;
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="text-base font-bold text-forest">Delivery Timeline</h3>
-        {currentTier.discount > 0 && (
-          <span className="text-xs font-bold text-white bg-forest px-2.5 py-1 rounded-full">
-            {currentTier.discount}% OFF
-          </span>
-        )}
+    <div className="mb-4">
+      {/* Header */}
+      <div className="flex items-center gap-2 mb-3">
+        <h3 className="text-base font-bold text-forest">
+          Same garden. You choose the price.
+        </h3>
       </div>
-      <p className="text-xs text-gray-500 mb-4">
-        Choose when you need it — longer wait = bigger savings
+      <p className="text-xs text-gray-500 mb-3">
+        Give us more time, we ship direct from the maker — no warehouse, no middlemen. You save.
       </p>
 
-      {/* Slider */}
-      <div className="relative mb-2">
-        <input
-          type="range"
-          min={0}
-          max={SLIDER_DAYS.length - 1}
-          step={1}
-          value={sliderIndex}
-          onChange={(e) => setDeliveryDays(SLIDER_DAYS[Number(e.target.value)])}
-          className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-forest"
-          style={{
-            background: `linear-gradient(to right, #2d5a3d ${(sliderIndex / (SLIDER_DAYS.length - 1)) * 100}%, #e5e7eb ${(sliderIndex / (SLIDER_DAYS.length - 1)) * 100}%)`,
-          }}
-        />
-        {/* Tick marks */}
-        <div className="flex justify-between px-0.5 mt-1">
-          {DELIVERY_TIERS.map((tier, i) => (
+      {/* 3 Price cards */}
+      <div className="grid grid-cols-3 gap-2.5">
+        {VISIBLE_TIERS.map((tier) => {
+          const isActive = currentTier.days === tier.days;
+          const price = Math.round(originalTotal * tier.multiplier);
+          const savings = originalTotal - price;
+          const isBestDeal = tier.days === 45;
+
+          return (
             <button
               key={tier.days}
               onClick={() => setDeliveryDays(tier.days)}
-              className={`text-[10px] font-medium transition-colors ${
-                i === sliderIndex ? "text-forest font-bold" : "text-gray-400"
+              className={`relative rounded-xl p-3 text-left transition-all border-2 ${
+                isActive
+                  ? isBestDeal
+                    ? "border-forest bg-forest/5 shadow-lg ring-2 ring-forest/20"
+                    : "border-forest bg-forest/5 shadow-lg ring-2 ring-forest/20"
+                  : "border-gray-200 bg-white hover:border-forest/40 hover:shadow-md"
               }`}
             >
-              {tier.days <= 2 ? "2d" : `${tier.days}d`}
+              {/* Best deal badge */}
+              {isBestDeal && (
+                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-forest text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap">
+                  BEST VALUE
+                </div>
+              )}
+
+              {/* Price — the hero number */}
+              <div className={`text-lg font-bold leading-tight ${isActive ? "text-forest" : "text-gray-800"}`}>
+                {formatRs(price)}
+              </div>
+
+              {/* Savings */}
+              {tier.discount > 0 ? (
+                <div className="text-[11px] font-semibold text-forest mt-0.5">
+                  Save {formatRs(savings)}
+                </div>
+              ) : (
+                <div className="text-[11px] text-gray-400 mt-0.5">
+                  MRP
+                </div>
+              )}
+
+              {/* Timeline pill */}
+              <div className={`mt-2 text-[10px] font-medium px-2 py-0.5 rounded-full inline-block ${
+                isActive
+                  ? "bg-forest/10 text-forest"
+                  : "bg-gray-100 text-gray-500"
+              }`}>
+                {tier.days <= 2 ? "1-2 days" : `${tier.days} days`}
+              </div>
+
+              {/* One-liner */}
+              <div className="text-[10px] text-gray-400 mt-1.5 leading-tight">
+                {tier.days <= 2
+                  ? "Ready stock"
+                  : tier.days <= 15
+                  ? "Made fresh for you"
+                  : "Direct from factory"}
+              </div>
             </button>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
-      {/* Active tier info */}
-      <div className="mt-3 p-3 rounded-lg bg-sage/40 border border-forest/10">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-sm font-semibold text-forest">
-            {currentTier.label}
-          </span>
-          <span className="text-sm font-bold text-forest">
-            {formatRs(discountedTotal)}
-          </span>
-        </div>
-        <p className="text-xs text-gray-500">{currentTier.description}</p>
-        {savings > 0 && (
-          <div className="mt-2 flex items-center gap-2">
-            <span className="text-xs line-through text-gray-400">
-              {formatRs(originalTotal)}
-            </span>
-            <span className="text-xs font-bold text-forest bg-sage px-2 py-0.5 rounded-full">
-              You save {formatRs(savings)}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Explainer */}
-      <details className="mt-3 text-xs text-gray-500">
-        <summary className="cursor-pointer hover:text-forest transition-colors font-medium">
-          Why waiting saves you money
+      {/* "More options" expandable for the 2 intermediate tiers */}
+      <details className="mt-2">
+        <summary className="text-[11px] text-gray-400 cursor-pointer hover:text-forest transition-colors">
+          More delivery options
         </summary>
-        <div className="mt-2 pl-3 border-l-2 border-forest/20 space-y-1">
-          <p>Direct from manufacturer — no warehousing costs</p>
-          <p>No middlemen or distributor markups</p>
-          <p>Made fresh on demand — zero inventory waste</p>
-          <p>Savings passed directly to you</p>
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          {DELIVERY_TIERS.filter(
+            (t) => !VISIBLE_TIERS.includes(t)
+          ).map((tier) => {
+            const isActive = currentTier.days === tier.days;
+            const price = Math.round(originalTotal * tier.multiplier);
+            return (
+              <button
+                key={tier.days}
+                onClick={() => setDeliveryDays(tier.days)}
+                className={`rounded-lg p-2.5 text-left transition-all border ${
+                  isActive
+                    ? "border-forest bg-forest/5"
+                    : "border-gray-200 bg-white hover:border-forest/40"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className={`text-sm font-bold ${isActive ? "text-forest" : "text-gray-800"}`}>
+                    {formatRs(price)}
+                  </span>
+                  <span className="text-[10px] font-medium text-forest bg-forest/10 px-1.5 py-0.5 rounded-full">
+                    {tier.discount}% off
+                  </span>
+                </div>
+                <div className="text-[10px] text-gray-400 mt-0.5">
+                  {tier.days} days — {tier.days === 7 ? "Supplier direct" : "Zero waste, on demand"}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </details>
     </div>

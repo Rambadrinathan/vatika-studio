@@ -295,19 +295,12 @@ export default function DesignResult() {
             </div>
 
             {/* Budget + price tag */}
-            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2">
-              <span>{formatBudgetShort(budget)} plan</span>
-              <span>&middot;</span>
-              {deliveryTier.discount > 0 ? (
-                <>
-                  <span className="line-through opacity-60">{formatRs(rec.grandTotal)}</span>
-                  <span className="font-bold">{formatRs(discountedTotal)}</span>
-                  <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-bold">
-                    {deliveryTier.discount}% OFF
-                  </span>
-                </>
-              ) : (
-                <span>{formatRs(rec.grandTotal)}</span>
+            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-medium">
+              {formatBudgetShort(budget)} plan &middot; {formatRs(discountedTotal)}
+              {deliveryTier.discount > 0 && (
+                <span className="ml-1.5 bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                  {deliveryTier.discount}% OFF
+                </span>
               )}
             </div>
 
@@ -321,6 +314,9 @@ export default function DesignResult() {
               </div>
             )}
           </div>
+
+          {/* ── CHOOSE YOUR PRICE (delivery tiers) ── */}
+          <DeliverySlider originalTotal={rec.grandTotal} />
 
           {/* ── BUDGET CHIPS ── */}
           <div className="mb-4">
@@ -480,21 +476,8 @@ export default function DesignResult() {
                   <div className="text-xs text-gray-500">
                     with {item.plant.name}
                   </div>
-                  <div className="text-xs mt-1">
-                    {deliveryTier.discount > 0 ? (
-                      <span className="flex items-center gap-1.5">
-                        <span className="line-through text-gray-400">
-                          {formatRs((item.planter.price + item.plant.price) * item.qty)}
-                        </span>
-                        <span className="text-forest font-bold">
-                          {formatRs(Math.round((item.planter.price + item.plant.price) * item.qty * deliveryMultiplier))}
-                        </span>
-                      </span>
-                    ) : (
-                      <span className="text-forest font-bold">
-                        {formatRs((item.planter.price + item.plant.price) * item.qty)}
-                      </span>
-                    )}
+                  <div className="text-xs text-forest font-bold mt-1">
+                    {formatRs(Math.round((item.planter.price + item.plant.price) * item.qty * deliveryMultiplier))}
                   </div>
                 </div>
               ))}
@@ -530,9 +513,6 @@ export default function DesignResult() {
               </button>
             </div>
           </div>
-
-          {/* ── DELIVERY SLIDER ── */}
-          <DeliverySlider originalTotal={rec.grandTotal} />
 
           {/* ── CTA ── */}
           <div className="bg-forest text-white rounded-xl p-6 mb-6">
