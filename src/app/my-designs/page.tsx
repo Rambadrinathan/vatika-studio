@@ -92,24 +92,23 @@ function MyDesignsContent() {
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
           <button
             onClick={() => router.push("/")}
-            className="w-9 h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center transition-colors"
+            className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-forest">
-              <path d="M19 12H5M12 19l-7-7 7-7" />
+            <svg viewBox="0 0 32 32" className="w-9 h-9" fill="none">
+              <path d="M16 2C10 8 4 16 4 22c0 5 4 8 8 8 2 0 3-1 4-2 1 1 2 2 4 2 4 0 8-3 8-8 0-6-6-14-12-20z" fill="#2D6A4F" />
+              <path d="M16 10v16M16 14c-3 2-5 5-5 8M16 18c3-2 5-4 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-          </button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-forest flex items-center justify-center">
-              <span className="text-white font-bold text-lg">K</span>
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-forest leading-tight">
-                My Designs
+            <div className="text-left">
+              <h1 className="text-lg font-bold text-forest leading-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                Vatika.AI
               </h1>
               <p className="text-xs text-gray-500 leading-tight">
-                Vatika.AI
+                by KarmYog
               </p>
             </div>
+          </button>
+          <div className="ml-auto text-sm font-semibold text-forest">
+            My Designs
           </div>
         </div>
       </header>

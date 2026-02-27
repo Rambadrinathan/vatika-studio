@@ -49,13 +49,22 @@ function AppContent() {
       {/* ═══════════════════ NAVBAR ═══════════════════ */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 navbar-blur ${
-          scrolled ? "navbar-scrolled" : "bg-transparent"
+          scrolled || step === 2 ? "navbar-scrolled" : "bg-transparent"
         }`}
       >
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => {
+              if (step === 2) {
+                useDesignStore.getState().setStep(1);
+              } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
+            className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+          >
             <LeafLogo className="w-9 h-9" />
-            <div>
+            <div className="text-left">
               <h1
                 className={`text-xl font-bold leading-tight transition-colors ${
                   scrolled || step === 2 ? "text-forest" : "text-white"
@@ -72,7 +81,7 @@ function AppContent() {
                 by KarmYog
               </p>
             </div>
-          </div>
+          </button>
 
           <div className="flex items-center gap-3">
             {/* Catalog link (visible on scroll) */}
@@ -325,15 +334,21 @@ function AppContent() {
       <footer className="bg-forest-dark text-white/70 py-10">
         <div className="max-w-5xl mx-auto px-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                useDesignStore.getState().setStep(1);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+            >
               <LeafLogo className="w-8 h-8" />
-              <div>
+              <div className="text-left">
                 <div className="text-white font-bold text-lg" style={{ fontFamily: "var(--font-display)" }}>
                   Vatika.AI
                 </div>
                 <div className="text-white/40 text-xs">by KarmYog</div>
               </div>
-            </div>
+            </button>
 
             <div className="text-center text-sm">
               <p>NatureLink Education Network Pvt. Ltd.</p>
