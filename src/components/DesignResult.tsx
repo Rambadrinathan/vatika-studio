@@ -2,9 +2,10 @@
 
 import { useDesignStore, MAX_FREE_RENDITIONS } from "@/lib/store";
 import type { GeneratedImage } from "@/lib/store";
-import { recommendProducts } from "@/lib/catalog";
+import { recommendProducts, getDeliveryTier, getDiscountMultiplier } from "@/lib/catalog";
 import { buildScenePrompt, buildIterationPrompt } from "@/lib/prompts";
 import { saveDesign, loadDesigns } from "@/lib/db";
+import DeliverySlider from "@/components/DeliverySlider";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 
 /** Standard budget chips for quick switching */
@@ -37,6 +38,7 @@ export default function DesignResult() {
     setStep,
     reset,
     user,
+    deliveryDays,
   } = useDesignStore();
 
   const [feedback, setFeedback] = useState("");
@@ -65,6 +67,11 @@ export default function DesignResult() {
 
   // Current recommendation for active budget
   const rec = useMemo(() => recommendProducts(budget, spaceType), [budget, spaceType]);
+
+  // Delivery pricing
+  const deliveryMultiplier = getDiscountMultiplier(deliveryDays);
+  const deliveryTier = getDeliveryTier(deliveryDays);
+  const discountedTotal = Math.round(rec.grandTotal * deliveryMultiplier);
 
   // Active design (if one exists for current budget + spaceType)
   const activeDesign = designs.find(
@@ -288,8 +295,20 @@ export default function DesignResult() {
             </div>
 
             {/* Budget + price tag */}
-            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-medium">
-              {formatBudgetShort(budget)} plan &middot; {formatRs(rec.grandTotal)}
+            <div className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-2">
+              <span>{formatBudgetShort(budget)} plan</span>
+              <span>&middot;</span>
+              {deliveryTier.discount > 0 ? (
+                <>
+                  <span className="line-through opacity-60">{formatRs(rec.grandTotal)}</span>
+                  <span className="font-bold">{formatRs(discountedTotal)}</span>
+                  <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                    {deliveryTier.discount}% OFF
+                  </span>
+                </>
+              ) : (
+                <span>{formatRs(rec.grandTotal)}</span>
+              )}
             </div>
 
             {/* Generating overlay */}
@@ -461,9 +480,20 @@ export default function DesignResult() {
                   <div className="text-xs text-gray-500">
                     with {item.plant.name}
                   </div>
-                  <div className="text-xs text-forest font-bold mt-1">
-                    {formatRs(
-                      (item.planter.price + item.plant.price) * item.qty
+                  <div className="text-xs mt-1">
+                    {deliveryTier.discount > 0 ? (
+                      <span className="flex items-center gap-1.5">
+                        <span className="line-through text-gray-400">
+                          {formatRs((item.planter.price + item.plant.price) * item.qty)}
+                        </span>
+                        <span className="text-forest font-bold">
+                          {formatRs(Math.round((item.planter.price + item.plant.price) * item.qty * deliveryMultiplier))}
+                        </span>
+                      </span>
+                    ) : (
+                      <span className="text-forest font-bold">
+                        {formatRs((item.planter.price + item.plant.price) * item.qty)}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -472,12 +502,23 @@ export default function DesignResult() {
 
             <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between items-center">
               <div>
-                <div className="font-bold text-forest text-lg">
-                  Total: {formatRs(rec.grandTotal)}
-                </div>
-                {rec.grandTotal < budget && (
+                {deliveryTier.discount > 0 ? (
+                  <>
+                    <div className="text-sm text-gray-400 line-through">
+                      {formatRs(rec.grandTotal)}
+                    </div>
+                    <div className="font-bold text-forest text-lg">
+                      Total: {formatRs(discountedTotal)}
+                    </div>
+                  </>
+                ) : (
+                  <div className="font-bold text-forest text-lg">
+                    Total: {formatRs(rec.grandTotal)}
+                  </div>
+                )}
+                {discountedTotal < budget && (
                   <div className="text-xs text-gray-400">
-                    {formatRs(budget - rec.grandTotal)} under budget
+                    {formatRs(budget - discountedTotal)} under budget
                   </div>
                 )}
               </div>
@@ -490,12 +531,16 @@ export default function DesignResult() {
             </div>
           </div>
 
+          {/* ── DELIVERY SLIDER ── */}
+          <DeliverySlider originalTotal={rec.grandTotal} />
+
           {/* ── CTA ── */}
           <div className="bg-forest text-white rounded-xl p-6 mb-6">
             <h3 className="font-bold text-lg mb-2">Love this design?</h3>
             <p className="text-sm text-white/80 mb-4">
-              Our team will install these exact products in your space. Free site
-              visit included.
+              {deliveryTier.discount > 0
+                ? `Save ${formatRs(rec.grandTotal - discountedTotal)} with ${deliveryTier.label.toLowerCase()} delivery. Our team will install these exact products in your space.`
+                : "Our team will install these exact products in your space. Free site visit included."}
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
               <a
@@ -567,18 +612,39 @@ export default function DesignResult() {
                 ))}
               </tbody>
               <tfoot>
+                <tr className="bg-sage/50">
+                  <td colSpan={3} className="p-2 text-right text-sm">
+                    Subtotal (MRP)
+                  </td>
+                  <td className="p-2 text-right text-sm">
+                    {formatRs(rec.grandTotal)}
+                  </td>
+                </tr>
+                {deliveryTier.discount > 0 && (
+                  <tr className="bg-sage/50">
+                    <td colSpan={3} className="p-2 text-right text-sm text-forest">
+                      {deliveryTier.label} ({deliveryTier.discount}% off)
+                    </td>
+                    <td className="p-2 text-right text-sm text-forest font-medium">
+                      &minus;{formatRs(rec.grandTotal - discountedTotal)}
+                    </td>
+                  </tr>
+                )}
                 <tr className="bg-sage font-bold">
                   <td colSpan={3} className="p-2 text-right">
                     Total
                   </td>
                   <td className="p-2 text-right text-forest">
-                    {formatRs(rec.grandTotal)}
+                    {formatRs(discountedTotal)}
                   </td>
                 </tr>
               </tfoot>
             </table>
             <div className="bg-sage/50 rounded-lg p-3 text-xs text-gray-500 mb-4">
               <p>
+                <strong>Delivery:</strong> {deliveryTier.label} — estimated {deliveryTier.days <= 2 ? "1-2" : deliveryTier.days} days
+              </p>
+              <p className="mt-1">
                 <strong>Terms:</strong> 50% advance, 40% prior to dispatch, 10%
                 on completion.
               </p>
@@ -596,7 +662,7 @@ export default function DesignResult() {
               </button>
               <a
                 href={`https://wa.me/919830024611?text=${encodeURIComponent(
-                  `Hi, I'd like to proceed with my Vatika Studio design.\n\nBudget: ${formatRs(budget)}\nEstimate: ${formatRs(rec.grandTotal)}\nProducts: ${rec.items.map((i) => `${i.qty}x ${i.planter.name}`).join(", ")}\n\nPlease schedule a site visit.`
+                  `Hi, I'd like to proceed with my Vatika Studio design.\n\nBudget: ${formatRs(budget)}\nDelivery: ${deliveryTier.label} (${deliveryTier.days <= 2 ? "1-2" : deliveryTier.days} days)\nEstimate: ${formatRs(discountedTotal)}${deliveryTier.discount > 0 ? ` (${deliveryTier.discount}% off MRP ${formatRs(rec.grandTotal)})` : ""}\nProducts: ${rec.items.map((i) => `${i.qty}x ${i.planter.name}`).join(", ")}\n\nPlease schedule a site visit.`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"

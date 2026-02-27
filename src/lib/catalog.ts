@@ -122,6 +122,37 @@ export function isLoRATrained(planter: Planter): boolean {
   return planter.source === "karmyog";
 }
 
+// ─── DELIVERY TIERS ───
+// Longer wait = direct from manufacturer = less waste = lower price
+
+export interface DeliveryTier {
+  days: number;
+  label: string;
+  discount: number;   // percentage off
+  multiplier: number; // price multiplier (1 - discount/100)
+  description: string;
+}
+
+export const DELIVERY_TIERS: DeliveryTier[] = [
+  { days: 2,  label: "Express Delivery",                   discount: 0,  multiplier: 1.00, description: "Ready stock, shipped immediately" },
+  { days: 7,  label: "Standard — Direct from Supplier",    discount: 15, multiplier: 0.85, description: "Ships direct from supplier warehouse, no middlemen" },
+  { days: 15, label: "Made to Order",                      discount: 20, multiplier: 0.80, description: "Freshly manufactured for your order" },
+  { days: 30, label: "Factory Direct, Zero Waste",         discount: 30, multiplier: 0.70, description: "Manufactured on demand, zero inventory waste" },
+  { days: 45, label: "Manufacturer Direct, Maximum Savings", discount: 50, multiplier: 0.50, description: "Direct from factory floor, maximum savings passed to you" },
+];
+
+export function getDeliveryTier(days: number): DeliveryTier {
+  // Find the tier whose days value is closest (pick the one <= days, or the first)
+  for (let i = DELIVERY_TIERS.length - 1; i >= 0; i--) {
+    if (days >= DELIVERY_TIERS[i].days) return DELIVERY_TIERS[i];
+  }
+  return DELIVERY_TIERS[0];
+}
+
+export function getDiscountMultiplier(days: number): number {
+  return getDeliveryTier(days).multiplier;
+}
+
 // ─── BUDGET TIERS ───
 // Each tier has COMPLETELY different planters so every budget feels like a new catalog.
 

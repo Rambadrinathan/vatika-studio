@@ -35,6 +35,9 @@ export interface DesignState {
   error: string | null;
   setError: (e: string | null) => void;
 
+  deliveryDays: number;
+  setDeliveryDays: (d: number) => void;
+
   freeRenditionsUsed: number;
   incrementRenditions: () => void;
 
@@ -75,6 +78,9 @@ export const useDesignStore = create<DesignState>((set) => ({
   error: null,
   setError: (error) => set({ error }),
 
+  deliveryDays: 30,
+  setDeliveryDays: (deliveryDays) => set({ deliveryDays }),
+
   freeRenditionsUsed: 0,
   incrementRenditions: () =>
     set((s) => ({ freeRenditionsUsed: s.freeRenditionsUsed + 1 })),
@@ -88,6 +94,7 @@ export const useDesignStore = create<DesignState>((set) => ({
       photo: null,
       spaceType: "balcony",
       budget: 50000,
+      deliveryDays: 30,
       designs: [],
       isGenerating: false,
       error: null,

@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useDesignStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 import AuthGate from "@/components/AuthGate";
 import DesignInput from "@/components/DesignInput";
 import DesignResult from "@/components/DesignResult";
-import MyDesigns from "@/components/MyDesigns";
 
 function AppContent() {
+  const router = useRouter();
   const { step, user, setUser } = useDesignStore();
-  const [showMyDesigns, setShowMyDesigns] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   const handleLogout = async () => {
@@ -73,7 +73,7 @@ function AppContent() {
                       <button
                         onClick={() => {
                           setShowMenu(false);
-                          setShowMyDesigns(true);
+                          router.push("/my-designs");
                         }}
                         className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-3 transition-colors"
                       >
@@ -145,10 +145,6 @@ function AppContent() {
         </div>
       </footer>
 
-      {/* My Designs Panel */}
-      {showMyDesigns && (
-        <MyDesigns onClose={() => setShowMyDesigns(false)} />
-      )}
     </div>
   );
 }
