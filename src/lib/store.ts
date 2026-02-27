@@ -53,7 +53,7 @@ export const useDesignStore = create<DesignState>((set) => ({
   setStep: (step) => set({ step }),
 
   photo: null,
-  setPhoto: (photo) => set({ photo }),
+  setPhoto: (photo) => set({ photo, designs: [] }),
 
   spaceType: "balcony",
   setSpaceType: (spaceType) => set({ spaceType }),
