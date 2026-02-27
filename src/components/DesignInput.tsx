@@ -80,11 +80,26 @@ export default function DesignInput() {
       if (!files || files.length === 0) return;
       const file = files[0];
       if (!file.type.startsWith("image/")) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        if (typeof reader.result === "string") setPhoto(reader.result);
+      // Compress image to stay under Vercel's 4.5MB body limit
+      const img = new Image();
+      img.onload = () => {
+        const MAX_DIM = 1200;
+        let { width, height } = img;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          const scale = MAX_DIM / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, width, height);
+        const compressed = canvas.toDataURL("image/jpeg", 0.7);
+        setPhoto(compressed);
       };
-      reader.readAsDataURL(file);
+      img.src = URL.createObjectURL(file);
     },
     [setPhoto]
   );

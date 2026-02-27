@@ -96,15 +96,31 @@ export default function DesignResult() {
     return Array.from(set).sort((a, b) => a - b);
   }, [budget, designs]);
 
-  /** Convert an image URL to a data URI */
+  /** Convert an image URL to a compressed data URI */
   const imageUrlToDataUri = useCallback(async (url: string): Promise<string> => {
     const res = await fetch(url);
     const blob = await res.blob();
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const MAX_DIM = 512;
+        let { width, height } = img;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          const scale = MAX_DIM / Math.max(width, height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { reject(new Error("No canvas context")); return; }
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.7));
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(blob);
     });
   }, []);
 
@@ -138,7 +154,16 @@ export default function DesignResult() {
           }),
         });
 
-        const data = await res.json();
+        let data;
+        const contentType = res.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+          data = await res.json();
+        } else {
+          const text = await res.text();
+          throw new Error(text.includes("Entity Too Large")
+            ? "Image too large. Please use a smaller photo."
+            : text || `Server error (${res.status})`);
+        }
         if (!res.ok) throw new Error(data.error || "Generation failed");
 
         const render: GeneratedImage = {
