@@ -117,7 +117,7 @@ export default function DesignInput() {
           Design Your Space
         </h2>
         <p className="text-muted text-lg max-w-lg mx-auto">
-          Three simple steps to your dream green space. Our AI places real products from our curated catalog into your photo.
+          Three simple steps to your dream green space. Vatika places real products from our curated catalog into your photo.
         </p>
       </div>
 

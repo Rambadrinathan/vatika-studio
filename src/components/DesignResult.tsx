@@ -217,7 +217,7 @@ export default function DesignResult() {
           <span className="text-sm">&#128293;</span>
           <span className="text-xs font-bold text-amber-800">
             {renditionsLeft > 0
-              ? `Only ${renditionsLeft} Free AI Designs Left`
+              ? `Only ${renditionsLeft} Free Vatika Designs Left`
               : "Rs. 10 per design"}
           </span>
         </div>
@@ -269,7 +269,7 @@ export default function DesignResult() {
           <div className="relative rounded-2xl overflow-hidden border-2 border-forest shadow-xl mb-4 group">
             <img
               src={showOriginal ? photo! : activeDesign.render.url}
-              alt={showOriginal ? "Your original space" : "AI-generated garden design"}
+              alt={showOriginal ? "Your original space" : "Vatika garden design"}
               className="w-full object-cover"
               style={{ minHeight: "320px", maxHeight: "600px" }}
             />
@@ -278,7 +278,7 @@ export default function DesignResult() {
             <div className="absolute top-3 left-3 flex gap-2">
               <button onClick={() => setShowOriginal(false)}
                 className={`px-3 py-1 rounded-lg text-xs font-semibold backdrop-blur-sm transition-all ${!showOriginal ? "bg-forest text-white shadow-lg" : "bg-black/40 text-white/80 hover:bg-black/60"}`}>
-                AI Design
+                Vatika Design
               </button>
               <button onClick={() => setShowOriginal(true)}
                 className={`px-3 py-1 rounded-lg text-xs font-semibold backdrop-blur-sm transition-all ${showOriginal ? "bg-forest text-white shadow-lg" : "bg-black/40 text-white/80 hover:bg-black/60"}`}>
@@ -421,7 +421,7 @@ export default function DesignResult() {
             <div className="mb-4">
               <h3 className="text-sm font-semibold text-forest mb-2 flex items-center gap-1.5">
                 <span>&#10024;</span>
-                Your AI has generated {sortedDesigns.length} unique designs
+                Vatika has generated {sortedDesigns.length} unique designs
               </h3>
               <div className="flex gap-3 overflow-x-auto pb-2">
                 {sortedDesigns.map((d) => {
@@ -558,7 +558,7 @@ export default function DesignResult() {
                   : "Our team will install these exact products in your space. Free site visit included."}
               </p>
               <p className="text-xs text-white/50 mb-4 flex items-center gap-1">
-                <span>&#9889;</span> This AI design is held for you for 24 hours
+                <span>&#9889;</span> This Vatika design is held for you for 24 hours
               </p>
 
               <div className="flex flex-col sm:flex-row gap-2">

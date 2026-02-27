@@ -64,12 +64,7 @@ export const useDesignStore = create<DesignState>((set) => ({
   designs: [],
   addDesign: (entry) =>
     set((s) => ({
-      designs: [
-        entry,
-        ...s.designs.filter(
-          (d) => !(d.budget === entry.budget && (d.spaceType || "balcony") === (entry.spaceType || "balcony"))
-        ),
-      ],
+      designs: [entry, ...s.designs],
     })),
   setDesigns: (designs) => set({ designs }),
 

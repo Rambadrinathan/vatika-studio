@@ -181,7 +181,7 @@ function AppContent() {
             <div className="animate-fade-up">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-1.5 mb-6">
                 <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                <span className="text-white/80 text-sm font-medium">AI-Powered Design Studio</span>
+                <span className="text-white/80 text-sm font-medium">Vatika.AI Design Studio</span>
               </div>
             </div>
 
@@ -275,7 +275,7 @@ function AppContent() {
                 {
                   step: "2",
                   title: "Upload a Photo",
-                  desc: "Snap your space as it is. Our AI sees the potential.",
+                  desc: "Snap your space as it is. Vatika sees the potential.",
                   icon: (
                     <svg viewBox="0 0 48 48" className="w-14 h-14">
                       <rect x="6" y="10" width="36" height="28" rx="4" fill="#E8F5E9" stroke="#2D6A4F" strokeWidth="2" />
@@ -287,7 +287,7 @@ function AppContent() {
                 },
                 {
                   step: "3",
-                  title: "Get AI Design",
+                  title: "Get Vatika Design",
                   desc: "Watch your space come alive with real planters and plants.",
                   icon: (
                     <svg viewBox="0 0 48 48" className="w-14 h-14">

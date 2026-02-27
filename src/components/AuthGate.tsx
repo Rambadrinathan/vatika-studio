@@ -139,12 +139,13 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
       <div className="max-w-sm w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-forest flex items-center justify-center mx-auto mb-3">
-            <span className="text-white font-bold text-2xl">K</span>
-          </div>
-          <h1 className="text-2xl font-bold text-forest">KarmYog Vatika</h1>
+          <svg viewBox="0 0 32 32" className="w-16 h-16 mx-auto mb-3" fill="none">
+            <path d="M16 2C10 8 4 16 4 22c0 5 4 8 8 8 2 0 3-1 4-2 1 1 2 2 4 2 4 0 8-3 8-8 0-6-6-14-12-20z" fill="#2D6A4F" />
+            <path d="M16 10v16M16 14c-3 2-5 5-5 8M16 18c3-2 5-4 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+          <h1 className="text-2xl font-bold text-forest" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>Vatika.AI</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Design Studio — AI-Powered Biophilic Design
+            by KarmYog &middot; Biophilic Design Studio
           </p>
         </div>
 
