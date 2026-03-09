@@ -112,16 +112,6 @@ const UGAOO_PLANTERS: Planter[] = [
 
 export const PLANTERS: Planter[] = [...KARMYOG_PLANTERS, ...UGAOO_PLANTERS];
 
-// Filter helpers
-export const getKarmyogPlanters = () => PLANTERS.filter(p => p.source === "karmyog");
-export const getUgaooPlanters = () => PLANTERS.filter(p => p.source === "ugaoo");
-export const getPlantersByCategory = (cat: string) => PLANTERS.filter(p => p.category === cat);
-export const getCategories = () => Array.from(new Set(PLANTERS.map(p => p.category).filter(Boolean)));
-
-export function isLoRATrained(planter: Planter): boolean {
-  return planter.source === "karmyog";
-}
-
 // ─── DELIVERY TIERS ───
 // Longer wait = direct from manufacturer = less waste = lower price
 
@@ -168,7 +158,7 @@ export function getDiscountMultiplier(days: number): number {
 // ─── BUDGET TIERS ───
 // Each tier has COMPLETELY different planters so every budget feels like a new catalog.
 
-export type BudgetTier = "starter" | "classic" | "premium";
+export type BudgetTier = "starter" | "classic" | "premium" | "luxury" | "signature";
 
 const PLANTER_TIER: Record<string, BudgetTier> = {
   // ── KarmYog Starter (affordable basics) ──
@@ -242,14 +232,18 @@ const PLANTER_TIER: Record<string, BudgetTier> = {
 };
 
 export function getBudgetTier(budget: number): BudgetTier {
-  if (budget <= 30000) return "starter";
-  if (budget <= 60000) return "classic";
-  return "premium";
+  if (budget < 25000) return "starter";
+  if (budget < 40000) return "classic";
+  if (budget < 60000) return "premium";
+  if (budget < 80000) return "luxury";
+  return "signature";
 }
 
 function getPlantersForTier(tier: BudgetTier): Planter[] {
+  // luxury and signature tiers use premium planters
+  const mappedTier = tier === "luxury" || tier === "signature" ? "premium" : tier;
   return PLANTERS.filter(
-    (p) => p.id !== "balcony-hanger" && PLANTER_TIER[p.id] === tier
+    (p) => p.id !== "balcony-hanger" && PLANTER_TIER[p.id] === mappedTier
   );
 }
 
@@ -393,7 +387,7 @@ export function recommendProducts(
   }
 
   // ═══ PHASE 3: Small accents (starter/classic only) ═══
-  if (tier !== "premium" && remaining > 500) {
+  if (tier !== "premium" && tier !== "luxury" && tier !== "signature" && remaining > 500) {
     const smalls = tierPlanters.filter(
       (p) =>
         p.size === "small" && !selected.some((s) => s.planter.id === p.id)

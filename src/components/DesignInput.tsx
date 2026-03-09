@@ -1,16 +1,14 @@
 "use client";
 
 import { useDesignStore } from "@/lib/store";
-import type { SpaceType } from "@/lib/catalog";
+import type { SpaceType, BudgetTier } from "@/lib/catalog";
+import { getBudgetTier } from "@/lib/catalog";
+import { formatRs } from "@/lib/utils";
 import { useCallback, useRef, useState, useEffect } from "react";
 
 const MIN_BUDGET = 20000;
 const MAX_BUDGET = 100000;
 const STEP = 5000;
-
-function formatRs(n: number): string {
-  return `\u20B9${n.toLocaleString("en-IN")}`;
-}
 
 interface TierInfo {
   label: string;
@@ -18,16 +16,16 @@ interface TierInfo {
   icon: string;
 }
 
-function getBudgetTier(budget: number): TierInfo {
-  if (budget <= 25000)
-    return { label: "Starter", desc: "2-3 curated planters", icon: "\u{1F331}" };
-  if (budget <= 40000)
-    return { label: "Classic", desc: "4-5 planters with variety", icon: "\u{1F33F}" };
-  if (budget <= 60000)
-    return { label: "Premium", desc: "6-8 statement pieces", icon: "\u{1F33A}" };
-  if (budget <= 80000)
-    return { label: "Luxury", desc: "Full transformation", icon: "\u{2728}" };
-  return { label: "Signature", desc: "No compromise makeover", icon: "\u{1F451}" };
+const TIER_DISPLAY: Record<BudgetTier, TierInfo> = {
+  starter: { label: "Starter", desc: "2-3 curated planters", icon: "\u{1F331}" },
+  classic: { label: "Classic", desc: "4-5 planters with variety", icon: "\u{1F33F}" },
+  premium: { label: "Premium", desc: "6-8 statement pieces", icon: "\u{1F33A}" },
+  luxury: { label: "Luxury", desc: "Full transformation", icon: "\u{2728}" },
+  signature: { label: "Signature", desc: "No compromise makeover", icon: "\u{1F451}" },
+};
+
+function getBudgetTierInfo(budget: number): TierInfo {
+  return TIER_DISPLAY[getBudgetTier(budget)];
 }
 
 const TIER_THRESHOLDS = [
@@ -117,7 +115,7 @@ export default function DesignInput() {
   const clampedBudget = Math.max(MIN_BUDGET, Math.min(MAX_BUDGET, budget));
   if (clampedBudget !== budget) setBudget(clampedBudget);
 
-  const tier = getBudgetTier(clampedBudget);
+  const tier = getBudgetTierInfo(clampedBudget);
   const pct = ((clampedBudget - MIN_BUDGET) / (MAX_BUDGET - MIN_BUDGET)) * 100;
 
   // Determine step completion
@@ -351,7 +349,7 @@ export default function DesignInput() {
           {/* Tier pills */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
             {TIER_THRESHOLDS.map((t) => {
-              const isActive = getBudgetTier(clampedBudget).label === t.label;
+              const isActive = getBudgetTierInfo(clampedBudget).label === t.label;
               return (
                 <button
                   key={t.label}
