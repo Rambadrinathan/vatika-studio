@@ -5,11 +5,11 @@ import { useDesignStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 
 /* ── Access Control ── */
-const APP_PASSWORD = "kenwilber"; // case-insensitive
-const ALLOWED_PHONES = ["9830067217", "9830024611", "9167719898", "9820889081"];
-const PHONE_PASSWORD = "123456";
+const APP_PASSWORD = process.env.NEXT_PUBLIC_APP_PASSWORD || "";
+const ALLOWED_PHONES = (process.env.NEXT_PUBLIC_ALLOWED_PHONES || "").split(",");
+const PHONE_PASSWORD = process.env.NEXT_PUBLIC_PHONE_PASSWORD || "";
 
-function LeafLogo({ className = "w-16 h-16" }: { className?: string }) {
+export function LeafLogo({ className = "w-16 h-16" }: { className?: string }) {
   return (
     <svg viewBox="0 0 32 32" className={className} fill="none">
       <path d="M16 2C10 8 4 16 4 22c0 5 4 8 8 8 2 0 3-1 4-2 1 1 2 2 4 2 4 0 8-3 8-8 0-6-6-14-12-20z" fill="#2D6A4F" />
