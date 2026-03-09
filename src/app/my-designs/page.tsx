@@ -5,6 +5,7 @@ import type { DesignEntry } from "@/lib/store";
 import { loadDesigns, } from "@/lib/db";
 import { recommendProducts } from "@/lib/catalog";
 import type { SpaceType } from "@/lib/catalog";
+import { formatRs, formatBudgetShort, formatDate, WHATSAPP_PHONE, buildWhatsAppUrl } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import AuthGate from "@/components/AuthGate";
@@ -20,23 +21,6 @@ const SPACE_ICONS: Record<SpaceType, string> = {
   "living-room": "\u{1F6CB}\uFE0F",
   terrace: "\u{1F33F}",
 };
-
-function formatBudgetShort(n: number): string {
-  if (n >= 100000) return `${n / 100000}L`;
-  return `${n / 1000}K`;
-}
-
-function formatRs(n: number): string {
-  return `Rs. ${n.toLocaleString("en-IN")}`;
-}
-
-function formatDate(ts: number): string {
-  return new Date(ts).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 function MyDesignsContent() {
   const router = useRouter();
@@ -209,9 +193,9 @@ function MyDesignsContent() {
                                 Open in Editor
                               </button>
                               <a
-                                href={`https://wa.me/919830024611?text=${encodeURIComponent(
+                                href={buildWhatsAppUrl(WHATSAPP_PHONE,
                                   `Hi, I'd like to proceed with my Vatika Studio design.\n\nBudget: ${formatRs(design.budget)}\nSpace: ${SPACE_LABELS[design.spaceType || "balcony"]}\nEstimate: ${formatRs(rec.grandTotal)}\nProducts: ${rec.items.map((item) => `${item.qty}x ${item.planter.name}`).join(", ")}\n\nPlease schedule a site visit.`
-                                )}`}
+                                )}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex-1 px-3 py-2 rounded-lg border border-forest text-forest text-sm font-medium text-center hover:bg-sage transition-colors"

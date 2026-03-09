@@ -1,34 +1,14 @@
 "use client";
 
 import { useDesignStore } from "@/lib/store";
-import { DELIVERY_TIERS } from "@/lib/catalog";
-
-function formatRs(n: number): string {
-  return `Rs. ${n.toLocaleString("en-IN")}`;
-}
+import { DELIVERY_TIERS, getDiscountMultiplier } from "@/lib/catalog";
+import { formatRs } from "@/lib/utils";
 
 const MIN_DAYS = DELIVERY_TIERS[0].days;           // 2
 const MAX_DAYS = DELIVERY_TIERS[DELIVERY_TIERS.length - 1].days; // 45
 
-/** Interpolate discount multiplier for any day value (smooth, not stepped) */
-function getMultiplierSmooth(days: number): number {
-  if (days <= DELIVERY_TIERS[0].days) return DELIVERY_TIERS[0].multiplier;
-  if (days >= DELIVERY_TIERS[DELIVERY_TIERS.length - 1].days)
-    return DELIVERY_TIERS[DELIVERY_TIERS.length - 1].multiplier;
-  // Find surrounding tiers and lerp
-  for (let i = 0; i < DELIVERY_TIERS.length - 1; i++) {
-    const lo = DELIVERY_TIERS[i];
-    const hi = DELIVERY_TIERS[i + 1];
-    if (days >= lo.days && days <= hi.days) {
-      const t = (days - lo.days) / (hi.days - lo.days);
-      return lo.multiplier + t * (hi.multiplier - lo.multiplier);
-    }
-  }
-  return 1;
-}
-
 function getDiscountPct(days: number): number {
-  return Math.round((1 - getMultiplierSmooth(days)) * 100);
+  return Math.round((1 - getDiscountMultiplier(days)) * 100);
 }
 
 /** Get a label for the current day range */
@@ -55,7 +35,7 @@ interface Props {
 export default function DeliverySlider({ originalTotal }: Props) {
   const { deliveryDays, setDeliveryDays } = useDesignStore();
 
-  const multiplier = getMultiplierSmooth(deliveryDays);
+  const multiplier = getDiscountMultiplier(deliveryDays);
   const currentPrice = Math.round(originalTotal * multiplier);
   const savings = originalTotal - currentPrice;
   const discountPct = getDiscountPct(deliveryDays);

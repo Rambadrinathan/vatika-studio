@@ -4,27 +4,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDesignStore } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
-import AuthGate from "@/components/AuthGate";
+import AuthGate, { LeafLogo } from "@/components/AuthGate";
 import DesignInput from "@/components/DesignInput";
 import DesignResult from "@/components/DesignResult";
-
-/* ── Leaf SVG logo ── */
-function LeafLogo({ className = "w-8 h-8" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 32 32" className={className} fill="none">
-      <path
-        d="M16 2C10 8 4 16 4 22c0 5 4 8 8 8 2 0 3-1 4-2 1 1 2 2 4 2 4 0 8-3 8-8 0-6-6-14-12-20z"
-        fill="#2D6A4F"
-      />
-      <path
-        d="M16 10v16M16 14c-3 2-5 5-5 8M16 18c3-2 5-4 5-6"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
 
 function AppContent() {
   const router = useRouter();

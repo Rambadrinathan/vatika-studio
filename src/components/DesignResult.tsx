@@ -6,19 +6,11 @@ import { recommendProducts, getDeliveryTier, getDiscountMultiplier, DELIVERY_TIE
 import { buildScenePrompt, buildIterationPrompt } from "@/lib/prompts";
 import { saveDesign, loadDesigns } from "@/lib/db";
 import DeliverySlider from "@/components/DeliverySlider";
+import { formatRs, formatBudgetShort, WHATSAPP_PHONE, buildWhatsAppUrl } from "@/lib/utils";
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 
 /** Standard budget chips for quick switching */
 const BUDGET_CHIPS = [20000, 25000, 35000, 50000, 75000, 100000];
-
-function formatBudgetShort(n: number): string {
-  if (n >= 100000) return `${n / 100000}L`;
-  return `${n / 1000}K`;
-}
-
-function formatRs(n: number): string {
-  return `Rs. ${n.toLocaleString("en-IN")}`;
-}
 
 /** Max possible savings at 45 days */
 function getMaxSavings(total: number): number {
@@ -176,7 +168,7 @@ export default function DesignResult() {
         incrementRenditions();
 
         if (user) {
-          saveDesign(user.id, targetBudget, spaceType, render).catch(() => {});
+          saveDesign(user.id, targetBudget, spaceType, render).catch((err) => console.error('Failed to save design:', err));
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong");
@@ -588,9 +580,9 @@ export default function DesignResult() {
 
               <div className="flex flex-col sm:flex-row gap-2">
                 <a
-                  href={`https://wa.me/919830024611?text=${encodeURIComponent(
+                  href={buildWhatsAppUrl(WHATSAPP_PHONE,
                     `Hi, I'd like to proceed with my Vatika Studio design.\n\nBudget: ${formatRs(budget)}\nDelivery: ${deliveryTier.label} (${deliveryTier.days <= 2 ? "1-2" : deliveryTier.days} days)\nEstimate: ${formatRs(discountedTotal)}${discountPct > 0 ? ` (${discountPct}% off MRP ${formatRs(rec.grandTotal)})` : ""}\nProducts: ${rec.items.map((i) => `${i.qty}x ${i.planter.name}`).join(", ")}\n\nPlease schedule a site visit.`
-                  )}`}
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 text-center px-4 py-3 rounded-xl bg-[#25D366] text-white font-bold hover:bg-[#20bd5a] transition-colors flex items-center justify-center gap-2 shadow-lg"
@@ -600,7 +592,7 @@ export default function DesignResult() {
                   </svg>
                   WhatsApp Us to Proceed
                 </a>
-                <a href="tel:+919830024611"
+                <a href={`tel:+${WHATSAPP_PHONE}`}
                   className="flex-1 text-center px-4 py-3 rounded-xl border-2 border-white/30 text-white font-bold hover:bg-white/10 transition-colors">
                   Call: +91 98300 24611
                 </a>
@@ -687,9 +679,9 @@ export default function DesignResult() {
                 Close
               </button>
               <a
-                href={`https://wa.me/919830024611?text=${encodeURIComponent(
+                href={buildWhatsAppUrl(WHATSAPP_PHONE,
                   `Hi, I'd like to proceed with my Vatika Studio design.\n\nBudget: ${formatRs(budget)}\nDelivery: ${deliveryTier.label} (${deliveryTier.days <= 2 ? "1-2" : deliveryTier.days} days)\nEstimate: ${formatRs(discountedTotal)}${discountPct > 0 ? ` (${discountPct}% off MRP ${formatRs(rec.grandTotal)})` : ""}\nProducts: ${rec.items.map((i) => `${i.qty}x ${i.planter.name}`).join(", ")}\n\nPlease schedule a site visit.`
-                )}`}
+                )}
                 target="_blank" rel="noopener noreferrer"
                 className="flex-1 px-4 py-2.5 rounded-lg bg-forest text-white font-medium text-center">
                 Proceed via WhatsApp
