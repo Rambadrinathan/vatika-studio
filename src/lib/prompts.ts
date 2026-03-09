@@ -132,14 +132,3 @@ export function buildIterationPrompt(
   return `${buildScenePrompt(items, spaceType)}\n\nAdditional changes: ${feedback}`;
 }
 
-// ─── LEGACY EXPORTS ───
-
-export type GenerationStrategy = "scene";
-
-export function getGenerationStrategy(): GenerationStrategy {
-  return "scene";
-}
-
-export function getIpAdapterRefs(): string[] {
-  return [];
-}
